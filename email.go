@@ -42,7 +42,7 @@ var (
 
 // Parse any *@*.* string and append to the slice.
 func (s *emails) parseEmails(body []byte) {
-	body = obfuscatedSeparators.ReplaceAll(body, []byte("@"))
+	// body = obfuscatedSeparators.ReplaceAll(body, []byte("@"))
 	res := reg.FindAll(body, -1)
 
 	for _, r := range res {
