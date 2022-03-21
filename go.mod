@@ -1,4 +1,4 @@
-module github.com/lawzava/emailscraper
+module github.com/alixleger/emailscraper
 
 go 1.16
 
