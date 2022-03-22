@@ -56,7 +56,7 @@ func (s *Scraper) Scrape(url string) ([]string, error) {
 	}
 
 	for url, emails := range emailSources {
-		s.log(fmt.Sprintf("%d emails founded on %s: %s", len(emails), url, strings.Join(emails, ", ")))
+		s.log(fmt.Sprintf("%d emails found on %s: %s", len(emails), url, strings.Join(emails, ", ")))
 	}
 
 	return e.emails, nil
