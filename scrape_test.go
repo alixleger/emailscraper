@@ -3,7 +3,7 @@ package emailscraper_test
 import (
 	"testing"
 
-	"github.com/lawzava/emailscraper"
+	"github.com/alixleger/emailscraper"
 )
 
 func TestScrape(t *testing.T) {

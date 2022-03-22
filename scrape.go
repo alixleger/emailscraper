@@ -1,6 +1,9 @@
 package emailscraper
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/gocolly/colly"
 )
 
@@ -9,6 +12,8 @@ func (s *Scraper) Scrape(url string) ([]string, error) {
 	url = getWebsite(url, true)
 
 	var e emails
+
+	emailSources := make(map[string][]string)
 
 	c := s.collector
 
@@ -23,7 +28,10 @@ func (s *Scraper) Scrape(url string) ([]string, error) {
 
 	// Parse emails on each downloaded page
 	c.OnScraped(func(response *colly.Response) {
-		e.parseEmails(response.Body)
+		addedEmails := e.parseEmails(response.Body)
+		if len(addedEmails) > 0 {
+			emailSources[response.Request.URL.String()] = addedEmails
+		}
 	})
 
 	// cloudflare encoded email support
@@ -45,6 +53,10 @@ func (s *Scraper) Scrape(url string) ([]string, error) {
 		}
 
 		c.Wait() // Wait for concurrent scrapes to finish
+	}
+
+	for url, emails := range emailSources {
+		s.log(fmt.Sprintf("%d emails founded on %s: %s", len(emails), url, strings.Join(emails, ", ")))
 	}
 
 	return e.emails, nil

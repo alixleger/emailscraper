@@ -13,7 +13,7 @@ Requires chromium or google-chrome available in environment for JS render utiliz
 ## Installation
 
 ```
-go get github.com/lawzava/emailscraper
+go get github.com/alixleger/emailscraper
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ package main
 import (
 	"fmt"
 	
-	"github.com/lawzava/emailscraper"
+	"github.com/alixleger/emailscraper"
 )
 
 func main() {

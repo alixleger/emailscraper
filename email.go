@@ -15,9 +15,9 @@ type emails struct {
 	m      sync.Mutex
 }
 
-func (s *emails) add(email string) {
+func (s *emails) add(email string) bool {
 	if !isValidEmail(email) {
-		return
+		return false
 	}
 
 	// check for already existing emails
@@ -26,28 +26,36 @@ func (s *emails) add(email string) {
 
 	for _, existingEmail := range s.emails {
 		if existingEmail == email {
-			return
+			return false
 		}
 	}
 
 	s.emails = append(s.emails, email)
+
+	return true
 }
 
 // Initialize once.
 var (
 	reg = regexp.MustCompile(`([a-zA-Z0-9._-]+@([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+)`)
 
-	obfuscatedSeparators = regexp.MustCompile(`.(AT|at|ETA).`)
+	obfuscatedSeparators = regexp.MustCompile(`(\(|\[)(at|AT|ATE)(\)|\])`)
 )
 
 // Parse any *@*.* string and append to the slice.
-func (s *emails) parseEmails(body []byte) {
-	// body = obfuscatedSeparators.ReplaceAll(body, []byte("@"))
+func (s *emails) parseEmails(body []byte) []string {
+	body = obfuscatedSeparators.ReplaceAll(body, []byte("@"))
 	res := reg.FindAll(body, -1)
 
+	var addedEmails []string
 	for _, r := range res {
-		s.add(string(r))
+		email := string(r)
+		if s.add(email) == true {
+			addedEmails = append(addedEmails, email)
+		}
 	}
+
+	return addedEmails
 }
 
 func (s *emails) parseCloudflareEmail(cloudflareEncodedEmail string) {
